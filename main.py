@@ -1,6 +1,8 @@
 import pygame
 import random
 
+#Rfrjqadsfasd
+
 pygame.init()
 
 #Техехнические переменные
