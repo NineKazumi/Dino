@@ -1,42 +1,44 @@
 import pygame
 import random
 
-#Rfrjqadsfasd
-
 pygame.init()
 
 #Техехнические переменные
 display_height = 600
 display_width = 800
 display = pygame.display.set_mode((display_width, display_height))
-#icon = pygame.image.load("icon.png")
+icon = pygame.image.load("icon.png")
 clock = pygame.time.Clock()
 
 
-pygame.display.set_caption("DINO GAME")
-#pygame.display.set_icon(icon)
+pygame.display.set_caption("Run Dino! Run!")
+pygame.display.set_icon(icon)
 
 
 #Классы
 #Класс Кактуса(Противник)
 class Cactus:
-    def __init__(self, x, y, width, height, speed):
+    def __init__(self, x, y, width, image, speed):
         self.x = x
         self.y = y
         self.width = width
-        self.height = height
+        self.iamge = image
         self.speed = speed
 
     def move(self):
         if self.x >= -self.width:
-            pygame.draw.rect(display, (224, 121, 31), (self.x, self.y, self.width, self.height))
+            display.blit(self.iamge, (self.x, self.y))
             self.x -= self.speed
             return True
         else:
             return False
 
-    def return_self(self, radius):
+    def return_self(self, radius, y, width, image):
         self.x = radius
+        self.y = y
+        self.width = width
+        self.iamge = image
+        display.blit(self.iamge, (self.x, self.y))
 
 
 #Переменные
@@ -46,11 +48,13 @@ usr_height = 100
 usr_x = display_width // 3
 usr_y = display_height - usr_height - 100
 
-#Переменные Кактуса(До сих пор противник)
+#Переменные Кактуса(Противник)
 cactus_width = 20
 cactus_height = 70
 cactus_x = display_width - 50
 cactus_y = display_height - cactus_height - 100
+cactus_image = [pygame.image.load("cactus.png"), pygame.image.load("cactus.png")]
+cactus_options = [64, 408, 64, 408]
 
 #Переменные Прыжка(Функция игрока)
 make_jump = False
@@ -64,6 +68,7 @@ def run_game():
     game = True
     cactus_arr = []
     create_cactus_arr(cactus_arr)
+    land = pygame.image.load("land.png")
     
     #Проверка на выход
     while game:
@@ -87,7 +92,7 @@ def run_game():
             jump()
 
         #Отрисовка объектов
-        display.fill((255, 255, 255))
+        display.blit(land, (0, 0))
         draw_array(cactus_arr)
         pygame.draw.rect(display, (247, 240, 22), (usr_x, usr_y, usr_width, usr_height))
 
@@ -107,9 +112,23 @@ def jump():
 
 #Функция создание Кактусов
 def create_cactus_arr(array):
-    array.append(Cactus(display_width + 20, display_height - 170, 20, 70, 4))
-    array.append(Cactus(display_width + 300, display_height - 150, 30, 50, 4))
-    array.append(Cactus(display_width + 600, display_height - 180, 25, 80, 4))
+    choice = random.randrange(0, 2)
+    img = cactus_image[choice]
+    width = cactus_options[choice * 2]
+    height = cactus_options[choice * 2 + 1]
+    array.append(Cactus(display_width + 20, height, width, img, 4))
+    
+    choice = random.randrange(0, 2)
+    img = cactus_image[choice]
+    width = cactus_options[choice * 2]
+    height = cactus_options[choice * 2 + 1]
+    array.append(Cactus(display_width + 300, height, width, img, 4))
+    
+    choice = random.randrange(0, 2)
+    img = cactus_image[choice]
+    width = cactus_options[choice * 2]
+    height = cactus_options[choice * 2 + 1]
+    array.append(Cactus(display_width + 600, height, width, img, 4))
 
 #Функция поиска Радиуса
 def find_radius(array):
@@ -136,6 +155,12 @@ def draw_array(array):
         check = cactus.move()
         if not check:
             radius = find_radius(array)
-            cactus.return_self(radius)
+            
+            choice = random.randrange(0, 2)
+            img = cactus_image[choice]
+            width = cactus_options[choice * 2]
+            height = cactus_options[choice * 2 + 1]
+            
+            cactus.return_self(radius, height, width, img)
 
 run_game()
